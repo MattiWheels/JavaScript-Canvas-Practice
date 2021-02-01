@@ -1,34 +1,37 @@
+class Player {
+    constructor(size,x,y,hue) {
+        this.size = size;
+        this.x = x;
+        this.y = y;
+        this.hue = hue;
+    }
+    draw() {
+        this.vision()
+        ctx.fillStyle = this.hue;
+        ctx.fillRect(this.x,this.y,10,10);
+    }
+    vision() {
+        ctx.arc(this.x+5,this.y+5,55,0,2 * Math.PI);
+        ctx.closePath();
+    }
+
+}
+
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-var w = canvas.width;
-var h = canvas.height;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-var x = 65
-var y = 65
+let player = new Player(10,64,64,'red');
+let player2 = new Player(10, 478, 234,'blue');
+let player3 = new Player(10, 120, 460,'yellow');
+//let key = new Key();
 
-var p_size = 10;
-var p
+player.draw();
+player2.draw();
+player3.draw();
 
-drawPlayer();
-drawKey();
-drawFog();
-
-function drawPlayer() { 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(x,y,10,10);
-}
-
-function drawKey() {
-    ctx.fillStyle = 'yellow';
-    ctx.fillRect(540,230,10,10);
-}
-
-
-function drawFog() {
-    ctx.fillStyle = "grey";
-    ctx.beginPath();
-    ctx.arc(x+5, y+5, 28, 0, 2 * Math.PI);
-    ctx.rect(640, 0, -640, 480);
-    ctx.fill();
-}
+ctx.fillStyle = "grey";
+ctx.rect(canvas.width,0,-canvas.width,canvas.height);
+ctx.fill();

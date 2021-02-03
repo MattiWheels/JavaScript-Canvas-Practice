@@ -1,14 +1,12 @@
 class Player {
-    constructor(size,x,y,v,hue) {
+    constructor(size,x,y,hue) {
         this.size = size;
         this.x = x;
         this.y = y;
-        this.v = v;
         this.hue = hue;
     }
     draw() {
-        this.move();
-        this.vision();
+        this.vision()
         ctx.fillStyle = this.hue;
         ctx.fillRect(this.x,this.y,10,10);
         
@@ -20,9 +18,53 @@ class Player {
 
 }
 
+class Key {
+    held = false;
+    constructor(size,x,y) {
+        this.size = size;
+        this.x = x;
+        this.y = y;
+    }
+    draw() {
+
+        // fill ring shape - the main part of the key
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(this.x,this.y,this.size,this.size);
+
+        // erase to make key-hole
+        ctx.globalCompositeOperation='destination-out';
+        ctx.fillStyle = 'white';
+        ctx.fillRect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
+
+        // fill long key piece
+        ctx.globalCompositeOperation='source-over';
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
+
+        // fill key teeth
+        ctx.fillRect(this.x+this.size*2,this.y+this.size/2,this.size/6,this.size/3);
+        ctx.fillRect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
+
+    }
+    collide_check(player, key) {
+        if(this.held === false) {
+            check = collision(player, key);
+            if(check === true) {
+                this.held = true;
+                this.x = player.x;
+                this.y = player.y;
+            }
+            this.x = this.x
+            this.y = this.y
+        }
+
+    }
+
+}
+
 //previous movement functions temporarily commented out.
 
-//function keyDownHandler(e) {
+function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
         console.log('right');
@@ -45,7 +87,7 @@ class Player {
     }
 }
 
-//function keyUpHandler(e) {
+function keyUpHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = false;
     }
@@ -63,40 +105,44 @@ class Player {
 //main loop.
 function update() {
     requestAnimationFrame(update);
-
-    
-
     ctx.clearRect(0,0,canvas.width,canvas.height);
     player.draw();
-    player2.draw();
-    player3.draw();
+    key.draw();
     //ctx.fillStyle = "grey";
     //ctx.rect(canvas.width,0,-canvas.width,canvas.height);
     //ctx.fill();
 }
 
+
+function collision(rect1, rect2) {
+    if (rect1.x < rect2.x + rect2.size &&
+        rect1.x + rect1.size > rect2.x &&
+        rect1.y < rect2.y + rect2.size &&
+        rect1.y + rect1.size > rect2.y) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight-200;
 
-canvas.width = 800;
-canvas.height = 600;
+var player = new Player(20,64,64,'red');
+var key = new Key(10, 200, 200);
 
-var keys = [];
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
-//document.addEventListener("keydown", keyDownHandler, false);
-//document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("keydown", function(e) {
-    keys[e.key] = true;
-});
-document.addEventListener("keyup", function(e) {
-    keys[e.key] = false;
-});
+//document.addEventListener("keydown", function(e) {
+//    keys[e.key] = true;
+//});
+//document.addEventListener("keyup", function(e) {
+//    keys[e.key] = false;
+//});
 
-
-let player = new Player(10,64,64,1,'red');
-let player2 = new Player(10, 478, 234,5,'blue');
-let player3 = new Player(10, 120, 460,5,'yellow');
-//let key = new Key();
 
 update();
 //myVar = setInterval(update, 42);

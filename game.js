@@ -56,6 +56,8 @@ function keyUpHandler(e) {
 }
 
 function update() {
+    requestAnimationFrame(update);
+
     ctx.clearRect(0,0,canvas.width,canvas.height);
     player.draw();
     player2.draw();
@@ -63,8 +65,6 @@ function update() {
     //ctx.fillStyle = "grey";
     //ctx.rect(canvas.width,0,-canvas.width,canvas.height);
     //ctx.fill();
-    
-    requestAnimationFrame(update);
 }
 
 const canvas = document.getElementById('game');
@@ -76,9 +76,10 @@ canvas.height = 600;
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-let player = new Player(10,64,64,5,'red');
+let player = new Player(10,64,64,10,'red');
 let player2 = new Player(10, 478, 234,5,'blue');
 let player3 = new Player(10, 120, 460,5,'yellow');
 //let key = new Key();
 
 requestAnimationFrame(update);
+//myVar = setInterval(update, 42);

@@ -11,18 +11,68 @@ class Player {
         this.vision();
         ctx.fillStyle = this.hue;
         ctx.fillRect(this.x,this.y,10,10);
+        
     }
     vision() {
         ctx.arc(this.x+5,this.y+5,55,0,2 * Math.PI);
         ctx.closePath();
     }
-    move() {
-        requestAnimationFrame(this.move, 42)
-        if (keys[38]) {
-            this.y -= this.v;
-        }
-    }
 
+}
+
+//previous movement functions temporarily commented out.
+
+//function keyDownHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = true;
+        console.log('right');
+        player.x += player.v;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = true;
+        console.log('left');
+        player.x -= player.v;
+    }
+    else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = true;
+        console.log('up');
+        player.y -= player.v;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown") {
+        downPressed = true;
+        console.log('down');
+        player.y += player.v;
+    }
+}
+
+//function keyUpHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = false;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = false;
+    }
+    else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = false;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown") {
+        downPressed = false;
+    }
+}
+
+//main loop.
+function update() {
+    requestAnimationFrame(update);
+
+    
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    player.draw();
+    player2.draw();
+    player3.draw();
+    //ctx.fillStyle = "grey";
+    //ctx.rect(canvas.width,0,-canvas.width,canvas.height);
+    //ctx.fill();
 }
 
 const canvas = document.getElementById('game');
@@ -33,22 +83,20 @@ canvas.height = 600;
 
 var keys = [];
 
-let player = new Player(10,64,64,5,'red');
+//document.addEventListener("keydown", keyDownHandler, false);
+//document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("keydown", function(e) {
+    keys[e.key] = true;
+});
+document.addEventListener("keyup", function(e) {
+    keys[e.key] = false;
+});
+
+
+let player = new Player(10,64,64,1,'red');
 let player2 = new Player(10, 478, 234,5,'blue');
 let player3 = new Player(10, 120, 460,5,'yellow');
 //let key = new Key();
 
-player.draw();
-player2.draw();
-player3.draw();
-
-ctx.fillStyle = "grey";
-ctx.rect(canvas.width,0,-canvas.width,canvas.height);
-ctx.fill();
-
-function draw() {
-    
-}
-
-setInterval(draw, 42);
-
+update();
+//myVar = setInterval(update, 42);

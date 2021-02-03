@@ -30,21 +30,21 @@ class Key {
     }
     draw() {
 
-        // fill
+        // fill ring shape - the main part of the key
         ctx.fillStyle = 'yellow';
         ctx.fillRect(this.x,this.y,this.size,this.size);
 
-        // erase
+        // erase to make key-hole
         ctx.globalCompositeOperation='destination-out';
         ctx.fillStyle = 'white';
         ctx.fillRect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
 
-        // fill
+        // fill long key piece
         ctx.globalCompositeOperation='source-over';
         ctx.fillStyle = 'yellow';
         ctx.fillRect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
 
-        // fill
+        // fill key teeth
         ctx.fillRect(this.x+this.size*2,this.y+this.size/2,this.size/6,this.size/3);
         ctx.fillRect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
 

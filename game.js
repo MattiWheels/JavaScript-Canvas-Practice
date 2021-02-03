@@ -1,8 +1,9 @@
 class Player {
-    constructor(size,x,y,hue) {
+    constructor(size,x,y,v,hue) {
         this.size = size;
         this.x = x;
         this.y = y;
+        this.v = v;
         this.hue = hue;
     }
     draw() {
@@ -62,8 +63,6 @@ class Key {
 
 }
 
-//previous movement functions temporarily commented out.
-
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
@@ -105,12 +104,27 @@ function keyUpHandler(e) {
 //main loop.
 function update() {
     requestAnimationFrame(update);
+    
+    if (player.x >= (canvas.width-10)) {
+        player.x = (canvas.width-10);
+    }
+    else if (player.x <= 0) {
+        player.x = 0;
+    }
+
+    if (player.y >= (canvas.height-10)) {
+        player.y = (canvas.height-10);
+    }
+    else if (player.y <= 0) {
+        player.y = 0;
+    }
+
     ctx.clearRect(0,0,canvas.width,canvas.height);
     player.draw();
     key.draw();
-    //ctx.fillStyle = "grey";
-    //ctx.rect(canvas.width,0,-canvas.width,canvas.height);
-    //ctx.fill();
+    ///ctx.fillStyle = "grey";
+    ///ctx.rect(canvas.width,0,-canvas.width,canvas.height);
+    ///ctx.fill();
 }
 
 
@@ -130,19 +144,11 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(20,64,64,'red');
+var player = new Player(20,64,64,5,'red');
 var key = new Key(10, 200, 200);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-
-//document.addEventListener("keydown", function(e) {
-//    keys[e.key] = true;
-//});
-//document.addEventListener("keyup", function(e) {
-//    keys[e.key] = false;
-//});
-
 
 update();
 //myVar = setInterval(update, 42);

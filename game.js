@@ -84,7 +84,3 @@ let key = new Key(10, 200, 200);
 
 player.draw();
 key.draw();
-
-//ctx.fillStyle = "grey";
-//ctx.rect(canvas.width,0,-canvas.width,canvas.height);
-//ctx.fill();

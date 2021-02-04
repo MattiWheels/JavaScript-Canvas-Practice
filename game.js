@@ -133,6 +133,21 @@ function keyUpHandler(e) {
 
 function update() {
     requestAnimationFrame(update);
+    
+    if (player.x >= (canvas.width-10)) {
+        player.x = (canvas.width-10);
+    }
+    else if (player.x <= 0) {
+        player.x = 0;
+    }
+
+    if (player.y >= (canvas.height-10)) {
+        player.y = (canvas.height-10);
+    }
+    else if (player.y <= 0) {
+        player.y = 0;
+    }
+
     ctx.clearRect(0,0,canvas.width,canvas.height);
     draw_fog();
     key.collide_check(player, key);

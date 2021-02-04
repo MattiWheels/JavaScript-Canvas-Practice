@@ -9,12 +9,17 @@ class Player {
     draw() {
         this.vision()
         ctx.fillStyle = this.hue;
-        ctx.fillRect(this.x,this.y,this.size,this.size);
+        ctx.beginPath();
+        ctx.rect(this.x,this.y,this.size,this.size);
+        ctx.closePath();
+        ctx.fill();
     }
     vision() {
         ctx.globalCompositeOperation='destination-out';
         ctx.fillStyle = 'white';
+        ctx.beginPath();
         ctx.arc(this.x+5,this.y+5,55,0,2 * Math.PI);
+        ctx.closePath();
         ctx.fill();
         ctx.globalCompositeOperation='source-over';
     }
@@ -38,21 +43,33 @@ class Key {
 
         // fill ring shape - the main part of the key
         ctx.fillStyle = 'yellow';
-        ctx.fillRect(this.x,this.y,this.size,this.size);
+        ctx.beginPath();
+        ctx.rect(this.x,this.y,this.size,this.size);
+        ctx.closePath();
+        ctx.fill();
 
         // erase to make key-hole
         ctx.globalCompositeOperation='destination-out';
         ctx.fillStyle = 'white';
-        ctx.fillRect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
+        ctx.beginPath();
+        ctx.rect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
+        ctx.closePath();
+        ctx.fill();
 
         // fill long key piece
         ctx.globalCompositeOperation='source-over';
         ctx.fillStyle = 'yellow';
-        ctx.fillRect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
+        ctx.beginPath();
+        ctx.rect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
+        ctx.closePath();
+        ctx.fill();
 
         // fill key teeth
-        ctx.fillRect(this.x+this.size*2,this.y+this.size/2,this.size/6,this.size/3);
-        ctx.fillRect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
+        ctx.beginPath();
+        ctx.rect(this.x+this.size*2,this.y+this.size/2,this.size/6,this.size/3);
+        ctx.rect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
+        ctx.closePath();
+        ctx.fill();
 
     }
     collide_check(player) {
@@ -75,7 +92,10 @@ class Key {
 
 function draw_fog() {
     ctx.fillStyle = 'grey';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.beginPath();
+    ctx.rect(0,0,canvas.width,canvas.height);
+    ctx.closePath();
+    ctx.fill();
 }
 
 function collision(rect1, rect2) {
@@ -150,11 +170,11 @@ function boundary(obj) {
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    //draw_fog();
     boundary(player);
-    key.collide_check(player, key);
     player.draw();
     key.draw();
+    key.collide_check(player, key);
+    //draw_fog(); // this kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
 const canvas = document.getElementById('game');

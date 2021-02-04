@@ -9,18 +9,26 @@ class Player {
     draw() {
         this.vision()
         ctx.fillStyle = this.hue;
-        ctx.fillRect(this.x,this.y,10,10);
-        
+        ctx.fillRect(this.x,this.y,this.size,this.size);
     }
     vision() {
+        ctx.globalCompositeOperation='destination-out';
+        ctx.fillStyle = 'white';
         ctx.arc(this.x+5,this.y+5,55,0,2 * Math.PI);
-        ctx.closePath();
+        ctx.fill();
+        ctx.globalCompositeOperation='source-over';
+    }
+    drop(obj) {
+        obj.held = false;
+        obj.x = this.x+this.size*1.5;
+        obj.y = this.y;
     }
 
 }
 
 class Key {
     held = false;
+    true_size = 10;
     constructor(size,x,y) {
         this.size = size;
         this.x = x;
@@ -47,21 +55,40 @@ class Key {
         ctx.fillRect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
 
     }
-    collide_check(player, key) {
-        if(this.held === false) {
-            check = collision(player, key);
-            if(check === true) {
-                this.held = true;
-                this.x = player.x;
-                this.y = player.y;
+    collide_check(player) {
+        let check = collision(player, key);
+        if(check == true) {
+            key.held = true;
+            key.size = player.size*1.5;
+            key.x = player.x;
+            key.y = player.y;
+        } else {
+            key.held = false;
+            if(key.size != key.true_size) {
+                key.size = key.true_size;
             }
-            this.x = this.x
-            this.y = this.y
         }
 
     }
 
 }
+
+function draw_fog() {
+    ctx.fillStyle = 'grey';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function collision(rect1, rect2) {
+    if (rect1.x < rect2.x + rect2.size &&
+        rect1.x + rect1.size > rect2.x &&
+        rect1.y < rect2.y + rect2.size &&
+        rect1.y + rect1.size > rect2.y) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
@@ -84,6 +111,9 @@ function keyDownHandler(e) {
         console.log('down');
         player.y += player.v;
     }
+    else if(e.key == " ") {
+        player.drop(key);
+    }
 }
 
 function keyUpHandler(e) {
@@ -101,7 +131,6 @@ function keyUpHandler(e) {
     }
 }
 
-//main loop.
 function update() {
     requestAnimationFrame(update);
     
@@ -120,23 +149,10 @@ function update() {
     }
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    draw_fog();
+    key.collide_check(player, key);
     player.draw();
     key.draw();
-    ///ctx.fillStyle = "grey";
-    ///ctx.rect(canvas.width,0,-canvas.width,canvas.height);
-    ///ctx.fill();
-}
-
-
-function collision(rect1, rect2) {
-    if (rect1.x < rect2.x + rect2.size &&
-        rect1.x + rect1.size > rect2.x &&
-        rect1.y < rect2.y + rect2.size &&
-        rect1.y + rect1.size > rect2.y) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 const canvas = document.getElementById('game');
@@ -144,11 +160,10 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(20,64,64,5,'red');
-var key = new Key(10, 200, 200);
+var player = new Player(10,64,64,1,'red');
+var key = new Key(10, 88, 88);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 update();
-//myVar = setInterval(update, 42);

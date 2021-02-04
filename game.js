@@ -131,9 +131,7 @@ function keyUpHandler(e) {
     }
 }
 
-function update() {
-    requestAnimationFrame(update);
-    
+function boundary() {
     if (player.x >= (canvas.width-10)) {
         player.x = (canvas.width-10);
     }
@@ -147,6 +145,11 @@ function update() {
     else if (player.y <= 0) {
         player.y = 0;
     }
+}
+
+function update() {
+    requestAnimationFrame(update);
+    boundary();
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
     //draw_fog();

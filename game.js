@@ -9,7 +9,7 @@ class Player {
     draw() {
         this.vision()
         ctx.fillStyle = this.hue;
-        ctx.fillRect(this.x,this.y,10,10);
+        ctx.fillRect(this.x,this.y,this.size,this.size);
     }
     vision() {
         ctx.globalCompositeOperation='destination-out';
@@ -18,11 +18,17 @@ class Player {
         ctx.fill();
         ctx.globalCompositeOperation='source-over';
     }
+    drop(obj) {
+        obj.held = false;
+        obj.x = this.x+this.size*1.5;
+        obj.y = this.y;
+    }
 
 }
 
 class Key {
     held = false;
+    true_size = 10;
     constructor(size,x,y) {
         this.size = size;
         this.x = x;
@@ -50,11 +56,16 @@ class Key {
 
     }
     collide_check(player) {
-        if(this.held == false) {
-            let check = collision(player, key);
-            if(check == true) {
-                this.held = true;
-                this.size = player.size/2
+        let check = collision(player, key);
+        if(check == true) {
+            key.held = true;
+            key.size = player.size*1.5;
+            key.x = player.x;
+            key.y = player.y;
+        } else {
+            key.held = false;
+            if(key.size != key.true_size) {
+                key.size = key.true_size;
             }
         }
 
@@ -100,6 +111,9 @@ function keyDownHandler(e) {
         console.log('down');
         player.y += player.v;
     }
+    else if(e.key == " ") {
+        player.drop(key);
+    }
 }
 
 function keyUpHandler(e) {
@@ -121,6 +135,7 @@ function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     draw_fog();
+    key.collide_check(player, key);
     player.draw();
     key.draw();
 }
@@ -130,8 +145,8 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(20,64,64,1,'red');
-var key = new Key(10, 72, 72);
+var player = new Player(10,64,64,1,'red');
+var key = new Key(10, 88, 88);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);

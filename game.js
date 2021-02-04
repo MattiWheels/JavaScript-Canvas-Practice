@@ -131,28 +131,27 @@ function keyUpHandler(e) {
     }
 }
 
-function boundary() {
-    if (player.x >= (canvas.width-10)) {
-        player.x = (canvas.width-10);
+function boundary(obj) {
+    if (obj.x >= (canvas.width-obj.size)) {
+        obj.x = (canvas.width-obj.size);
     }
-    else if (player.x <= 0) {
-        player.x = 0;
+    else if (obj.x <= 0) {
+        obj.x = 0;
     }
 
-    if (player.y >= (canvas.height-10)) {
-        player.y = (canvas.height-10);
+    if (obj.y >= (canvas.height-obj.size)) {
+        obj.y = (canvas.height-obj.size);
     }
-    else if (player.y <= 0) {
-        player.y = 0;
+    else if (obj.y <= 0) {
+        obj.y = 0;
     }
 }
 
 function update() {
     requestAnimationFrame(update);
-    boundary();
-
     ctx.clearRect(0,0,canvas.width,canvas.height);
     //draw_fog();
+    boundary(player);
     key.collide_check(player, key);
     player.draw();
     key.draw();
@@ -163,7 +162,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(10,64,64,1,'red');
+var player = new Player(10,64,64,5,'red');
 var key = new Key(10, 88, 88);
 
 document.addEventListener("keydown", keyDownHandler, false);

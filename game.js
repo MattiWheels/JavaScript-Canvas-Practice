@@ -59,7 +59,7 @@ class Key {
         let check = collision(player, key);
         if(check == true) {
             key.held = true;
-            key.size = player.size*1.5;
+            key.size = key.true_size/2;
             key.x = player.x;
             key.y = player.y;
         } else {
@@ -149,7 +149,7 @@ function update() {
     }
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    draw_fog();
+    //draw_fog();
     key.collide_check(player, key);
     player.draw();
     key.draw();

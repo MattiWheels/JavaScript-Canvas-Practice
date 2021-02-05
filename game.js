@@ -103,6 +103,22 @@ class Key {
     }
 }
 
+class Door {
+    open = false;
+    true_size = 32;
+    constructor(x,y) {
+        this.x = x;
+        this.y = y;
+    }
+    draw() {
+        ctx.fillStyle = 'brown';
+        ctx.beginPath();
+        ctx.rect(this.x,this.y,this.true_size,this.true_size)
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
 function draw_fog() {
     ctx.fillStyle = 'grey';
     ctx.beginPath();
@@ -121,7 +137,6 @@ function collision(rect1, rect2) {
         return false;
     }
 }
-
 
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {

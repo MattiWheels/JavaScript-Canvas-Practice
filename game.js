@@ -229,11 +229,11 @@ function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
-    
+    wall.collide_check(player);
     
     draw_fog();
     player.draw();
-    wall.collide_check(player);
+    
     // checks to see if key is within player vision (kind of) and if the player is touching the key
     wall.visible_check(player);
     key.visible_check(player);

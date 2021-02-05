@@ -80,7 +80,7 @@ class Key {
 
     }
     collide_check(player) {
-        let check = collision(player, key);
+        let check = collision(player,key);
         if(check == true) {
             this.held = true;
             this.size = key.true_size/2;
@@ -103,6 +103,48 @@ class Key {
     }
 }
 
+class Wall {
+    constructor(size,x,y) {
+        this.size = size;
+        this.x = x;
+        this.y = y;
+    }
+    draw() {
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.rect(this.x,this.y,this.size,this.size);
+        ctx.closePath();
+        ctx.fill();
+        this.collide_check(player);
+    }
+    visible_check(player) {
+        if (this.x > player.x - 50 && 
+            this.x < player.x + 50 - player.size/2 && 
+            this.y > player.y - 50 && 
+            this.y < player.y + 50  - player.size/2) {
+                this.draw();
+        }
+    }
+    collide_check(player) {
+        let check = collision(player,wall)
+        if (check) {
+            if (arrow == 1) {
+                player.y = this.y + this.size;
+            }
+            else if (arrow == 3) {
+                player.y = this.y - player.size;
+            }
+            else if (arrow == 2) {
+                player.x = this.x + this.size;
+            }
+            else if (arrow == 4) {
+                player.x = this.x - player.size;
+            }
+        }
+    }
+}
+
+
 function draw_fog() {
     ctx.fillStyle = 'grey';
     ctx.beginPath();
@@ -111,37 +153,29 @@ function draw_fog() {
     ctx.fill();
 }
 
-function collision(rect1, rect2) {
-    if (rect1.x < rect2.x + rect2.size &&
-        rect1.x + rect1.size > rect2.x &&
-        rect1.y < rect2.y + rect2.size &&
-        rect1.y + rect1.size > rect2.y) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
         console.log('right');
+        arrow = 4
         player.x += player.v;
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
         console.log('left');
+        arrow = 2
         player.x -= player.v;
     }
     else if(e.key == "Up" || e.key == "ArrowUp") {
         upPressed = true;
         console.log('up');
+        arrow = 1
         player.y -= player.v;
     }
     else if(e.key == "Down" || e.key == "ArrowDown") {
         downPressed = true;
         console.log('down');
+        arrow = 3
         player.y += player.v;
     }
     else if(e.key == " ") {
@@ -180,17 +214,35 @@ function boundary(obj) {
     }
 }
 
+function collision(rect1, rect2) {
+    if (rect1.x < rect2.x + rect2.size &&
+        rect1.x + rect1.size > rect2.x &&
+        rect1.y < rect2.y + rect2.size &&
+        rect1.y + rect1.size > rect2.y) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
     
+    
     draw_fog();
     player.draw();
-
+    wall.collide_check(player);
     // checks to see if key is within player vision (kind of) and if the player is touching the key
+    wall.visible_check(player);
     key.visible_check(player);
-    key.collide_check(player, key);
+    
+    key.collide_check(player,key);
+    
+    
+        
+    
      // fog kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
@@ -199,8 +251,10 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(10,64,64,5,'red');
+var player = new Player(8,64,64,4,'red');
 var key = new Key(10, 88, 88);
+var wall = new Wall(32,100,100);
+var arrow = 0
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);

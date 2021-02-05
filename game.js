@@ -7,7 +7,7 @@ class Player {
         this.hue = hue;
     }
     draw() {
-        this.vision()
+        this.vision();
         ctx.fillStyle = this.hue;
         ctx.beginPath();
         ctx.rect(this.x,this.y,this.size,this.size);
@@ -22,11 +22,18 @@ class Player {
         ctx.closePath();
         ctx.fill();
         ctx.globalCompositeOperation='source-over';
+        
     }
     drop(obj) {
-        obj.held = false;
-        obj.x = this.x+this.size*1.5;
-        obj.y = this.y;
+        if (obj.held) {
+            obj.held = false;
+            obj.x = this.x+this.size*1.5;
+            obj.y = this.y;
+        }
+        else {
+            obj.held = false;
+        }
+        
     }
 
 }
@@ -75,17 +82,21 @@ class Key {
     collide_check(player) {
         let check = collision(player, key);
         if(check == true) {
-            key.held = true;
-            key.size = key.true_size/1.25;
-            key.x = player.x+player.size/4;
-            key.y = player.y+player.size/4;
+            this.held = true;
+            this.size = key.true_size/2;
+            this.x = player.x+player.size/4;
+            this.y = player.y+player.size/4;
         } else {
-            key.held = false;
-            if(key.size != key.true_size) {
-                key.size = key.true_size;
+            this.held = false;
+            if(this.size != key.true_size) {
+                this.size = key.true_size;
             }
         }
-
+    }
+    visible_check(player) {
+        if (this.x > (player.x - 50) && (this.x < (player.x + 50 - player.size/2) && (this.y > (player.y - 50) && (this.y < (player.y + 50  - player.size/2))))) {
+            this.draw();
+        }
     }
 
 }
@@ -170,16 +181,15 @@ function boundary(obj) {
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    // draw_fog(); // this kind of works, but if the key is drawn before the fog, the key disappears.
-
-    // draw game objects
-    player.draw();
-    key.draw();
-
-    // do checks
     boundary(player);
+    
+    draw_fog();
+    player.draw();
+
+    // checks to see if key is within player vision (kind of) and if the player is touching the key
+    key.visible_check(player);
     key.collide_check(player, key);
+     // fog kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
 const canvas = document.getElementById('game');

@@ -7,7 +7,7 @@ class Player {
         this.hue = hue;
     }
     draw() {
-        this.vision()
+        this.vision();
         ctx.fillStyle = this.hue;
         ctx.beginPath();
         ctx.rect(this.x,this.y,this.size,this.size);
@@ -22,11 +22,18 @@ class Player {
         ctx.closePath();
         ctx.fill();
         ctx.globalCompositeOperation='source-over';
+        
     }
     drop(obj) {
-        obj.held = false;
-        obj.x = this.x+this.size*1.5;
-        obj.y = this.y;
+        if (obj.held) {
+            obj.held = false;
+            obj.x = this.x+this.size*1.5;
+            obj.y = this.y;
+        }
+        else {
+            obj.held = false;
+        }
+        
     }
 
 }
@@ -77,8 +84,8 @@ class Key {
         if(check == true) {
             key.held = true;
             key.size = key.true_size/2;
-            key.x = player.x;
-            key.y = player.y;
+            key.x = (player.x+2.5);
+            key.y = (player.y+2.5);
         } else {
             key.held = false;
             if(key.size != key.true_size) {
@@ -171,10 +178,17 @@ function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
-    player.draw();
+    
     key.draw();
+    draw_fog();
+    player.draw();
+
+    if (key.x > (player.x - 50) && (key.x < (player.x + 45) && (key.y > (player.y - 50) && (key.y < (player.y + 45))))) {
+        key.draw();
+    }
+
     key.collide_check(player, key);
-    //draw_fog(); // this kind of works, but if the key is drawn before the fog, the key disappears.
+     // fog kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
 const canvas = document.getElementById('game');

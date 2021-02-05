@@ -84,8 +84,8 @@ class Key {
         if(check == true) {
             this.held = true;
             this.size = key.true_size/2;
-            this.x = (player.x+2.5);
-            this.y = (player.y+2.5);
+            this.x = player.x+player.size/4;
+            this.y = player.y+player.size/4;
         } else {
             this.held = false;
             if(this.size != key.true_size) {

@@ -76,9 +76,9 @@ class Key {
         let check = collision(player, key);
         if(check == true) {
             key.held = true;
-            key.size = key.true_size/2;
-            key.x = player.x;
-            key.y = player.y;
+            key.size = key.true_size/1.25;
+            key.x = player.x+player.size/4;
+            key.y = player.y+player.size/4;
         } else {
             key.held = false;
             if(key.size != key.true_size) {
@@ -170,11 +170,16 @@ function boundary(obj) {
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    boundary(player);
+
+    // draw_fog(); // this kind of works, but if the key is drawn before the fog, the key disappears.
+
+    // draw game objects
     player.draw();
     key.draw();
+
+    // do checks
+    boundary(player);
     key.collide_check(player, key);
-    //draw_fog(); // this kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
 const canvas = document.getElementById('game');

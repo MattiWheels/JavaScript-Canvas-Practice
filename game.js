@@ -22,7 +22,6 @@ class Player {
         ctx.closePath();
         ctx.fill();
         ctx.globalCompositeOperation='source-over';
-        
     }
     drop(obj) {
         if (obj.held) {
@@ -33,21 +32,20 @@ class Player {
         else {
             obj.held = false;
         }
-        
     }
-
 }
 
 class Key {
     held = false;
     true_size = 10;
+    sizex = this.size
+    sizey = this.size
     constructor(size,x,y) {
         this.size = size;
         this.x = x;
         this.y = y;
     }
     draw() {
-
         // fill ring shape - the main part of the key
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
@@ -77,10 +75,9 @@ class Key {
         ctx.rect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
         ctx.closePath();
         ctx.fill();
-
     }
-    collide_check(player) {
-        let check = collision(player, this);
+    carry_check(player) {
+        let check = collision(player,this);
         if(check == true) {
             this.held = true;
             this.size = this.true_size/2;
@@ -91,14 +88,6 @@ class Key {
             if(this.size != key.true_size) {
                 this.size = key.true_size;
             }
-        }
-    }
-    visible_check(player) {
-        if (this.x > player.x - 50 && 
-            this.x < player.x + 50 - player.size/2 && 
-            this.y > player.y - 50 && 
-            this.y < player.y + 50  - player.size/2) {
-                this.draw();
         }
     }
 }
@@ -157,44 +146,54 @@ class Door {
     }
 }
 
-function draw_fog() {
-    ctx.fillStyle = 'grey';
-    ctx.beginPath();
-    ctx.rect(0,0,canvas.width,canvas.height);
-    ctx.closePath();
-    ctx.fill();
-}
-
-function collision(rect1, rect2) {
-    if (rect1.x < rect2.x + rect2.size &&
-        rect1.x + rect1.size > rect2.x &&
-        rect1.y < rect2.y + rect2.size &&
-        rect1.y + rect1.size > rect2.y) {
-        return true;
-    } else {
-        return false;
+class Wall {
+    constructor(size1,size2,x,y) {
+        this.size1 = size1;
+        this.size2 = size2;
+        this.x = x;
+        this.y = y;
+    }
+    draw() {
+        ctx.fillStyle = 'navy';
+        ctx.beginPath();
+        ctx.rect(this.x,this.y,this.size1,this.size2);
+        ctx.closePath();
+        ctx.fill();
+    }
+    barrier(player) {
+        let check = collision(player,this)
+        if (check) {
+            if (upPressed) {
+                player.y = this.y + this.size2;
+            }
+            else if (downPressed) {
+                player.y = this.y - player.size;
+            }
+            else if (leftPressed) {
+                player.x = this.x + this.size1;
+            }
+            else if (rightPressed) {
+                player.x = this.x - player.size;
+            }
+        }
     }
 }
 
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
-        console.log('right');
         player.x += player.v;
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
-        console.log('left');
         player.x -= player.v;
     }
     else if(e.key == "Up" || e.key == "ArrowUp") {
         upPressed = true;
-        console.log('up');
         player.y -= player.v;
     }
     else if(e.key == "Down" || e.key == "ArrowDown") {
         downPressed = true;
-        console.log('down');
         player.y += player.v;
     }
     else if(e.key == " ") {
@@ -233,28 +232,55 @@ function boundary(obj) {
     }
 }
 
+function collision(rect1, rect2) {
+    if(rect1.size) {
+        rect1.size1 = rect1.size;
+        rect1.size2 = rect1.size;
+    }
+    
+    if(rect2.size) {
+        rect2.size1 = rect2.size;
+        rect2.size2 = rect2.size;
+    }
+
+    if (rect1.x < rect2.x + rect2.size1 &&
+        rect1.x + rect1.size1 > rect2.x &&
+        rect1.y < rect2.y + rect2.size2 &&
+        rect1.y + rect1.size2 > rect2.y) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function draw_fog() {
+    ctx.fillStyle = 'grey';
+    ctx.beginPath();
+    ctx.rect(0,0,canvas.width,canvas.height);
+    ctx.closePath();
+    ctx.fill();
+}
+
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
+
+    wall.barrier(player);
+    wall2.barrier(player);
+    wall3.barrier(player);
     
-    // draw_fog();
-
-    // draw player door, and key will be drawn during keychecks
+    //draw_fog();
     player.draw();
-    door.draw();
+    key.carry_check(player);
+    key.draw();
 
-    // checks to see if key is within player vision (kind of) and if the player is touching the key
-    key.visible_check(player);
-    key.collide_check(player, key);
+    // later on, we should check to see object locations
+    // before drawing the walls. or visa versa.
+    wall.draw();
+    wall2.draw();
+    wall3.draw();
 
-    // checks to see if key is not being held by the player and is touching a door.
-    // checks pass, the door will draw as if it is open
-    if(key.held == false && collision(key, door) == true) {
-        door.open = true;
-    } else {
-        door.open = false;
-    }
 }
 
 // set up canvas and context
@@ -263,12 +289,14 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-// drop some objects in the game screen
-var player = new Player(10,64,64,5,'red');
-var key = new Key(10,88,88);
-var door = new Door(143,311);
+var upPressed = downPressed = rightPressed = leftPressed = false;
+var player = new Player(8,63,63,4,'red');
+var key = new Key(10, 88, 88);
 
-// keypress/keylift event handlers
+var wall = new Wall(512,32,143,151);
+var wall2 = new Wall(32,128,143,183);
+var wall3 = new Wall(64,64,143,343);
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 

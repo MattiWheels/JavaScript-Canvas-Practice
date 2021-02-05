@@ -82,17 +82,21 @@ class Key {
     collide_check(player) {
         let check = collision(player, key);
         if(check == true) {
-            key.held = true;
-            key.size = key.true_size/2;
-            key.x = (player.x+2.5);
-            key.y = (player.y+2.5);
+            this.held = true;
+            this.size = key.true_size/2;
+            this.x = (player.x+2.5);
+            this.y = (player.y+2.5);
         } else {
-            key.held = false;
-            if(key.size != key.true_size) {
-                key.size = key.true_size;
+            this.held = false;
+            if(this.size != key.true_size) {
+                this.size = key.true_size;
             }
         }
-
+    }
+    visible_check(player) {
+        if (this.x > (player.x - 50) && (this.x < (player.x + 50 - player.size/2) && (this.y > (player.y - 50) && (this.y < (player.y + 50  - player.size/2))))) {
+            this.draw();
+        }
     }
 
 }
@@ -179,14 +183,11 @@ function update() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
     
-    key.draw();
     draw_fog();
     player.draw();
 
-    if (key.x > (player.x - 50) && (key.x < (player.x + 45) && (key.y > (player.y - 50) && (key.y < (player.y + 45))))) {
-        key.draw();
-    }
-
+    // checks to see if key is within player vision (kind of) and if the player is touching the key
+    key.visible_check(player);
     key.collide_check(player, key);
      // fog kind of works, but if the key is drawn before the fog, the key disappears.
 }

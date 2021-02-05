@@ -94,11 +94,13 @@ class Key {
         }
     }
     visible_check(player) {
-        if (this.x > (player.x - 50) && (this.x < (player.x + 50 - player.size/2) && (this.y > (player.y - 50) && (this.y < (player.y + 50  - player.size/2))))) {
-            this.draw();
+        if (this.x > player.x - 50 && 
+            this.x < player.x + 50 - player.size/2 && 
+            this.y > player.y - 50 && 
+            this.y < player.y + 50  - player.size/2) {
+                this.draw();
         }
     }
-
 }
 
 function draw_fog() {

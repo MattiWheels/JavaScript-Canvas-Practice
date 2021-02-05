@@ -57,7 +57,7 @@ class Key {
         ctx.globalCompositeOperation='destination-out';
         ctx.fillStyle = 'white';
         ctx.beginPath();
-        ctx.rect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
+        ctx.rect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5);
         ctx.closePath();
         ctx.fill();
 
@@ -65,7 +65,7 @@ class Key {
         ctx.globalCompositeOperation='source-over';
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
-        ctx.rect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
+        ctx.rect(this.x+this.size,this.y+this.size/2,this.size,this.size/8);
         ctx.closePath();
         ctx.fill();
 
@@ -80,7 +80,7 @@ class Key {
         let check = collision(player,this);
         if(check == true) {
             this.held = true;
-            this.size = key.true_size/2;
+            this.size = this.true_size/2;
             this.x = player.x+player.size/4;
             this.y = player.y+player.size/4;
         } else {
@@ -89,6 +89,60 @@ class Key {
                 this.size = key.true_size;
             }
         }
+    }
+}
+
+class Door {
+    open = false;
+    true_size = 32;
+    size = 32;
+    constructor(x,y) {
+        this.x = x;
+        this.y = y;
+    }
+    draw() {
+        if(this.open == true) {
+            ctx.fillStyle = 'Silver';
+            ctx.beginPath();
+            ctx.rect(this.x,this.y,this.true_size,this.true_size);
+            ctx.closePath();
+            ctx.fill();
+    
+            ctx.fillStyle = 'Black';
+            ctx.beginPath();
+            ctx.rect(this.x+this.true_size/10,this.y+this.true_size/10,this.true_size-this.true_size/5,this.true_size-this.true_size/5);
+            ctx.closePath();
+            ctx.fill();
+        } else {
+            ctx.fillStyle = 'Silver';
+            ctx.beginPath();
+            ctx.rect(this.x,this.y,this.true_size,this.true_size);
+            ctx.closePath();
+            ctx.fill();
+    
+            ctx.fillStyle = 'Navy';
+            ctx.beginPath();
+            ctx.rect(this.x+this.true_size/10,this.y+this.true_size/10,this.true_size-this.true_size/5,this.true_size-this.true_size/5);
+            ctx.closePath();
+            ctx.fill();
+    
+            ctx.fillStyle = 'Silver';
+            ctx.beginPath();
+            ctx.rect(this.x+this.true_size/3,this.y+this.true_size/3,this.true_size/3,this.true_size/3);
+            ctx.rect(this.x,this.y+this.true_size/2.333,this.true_size,this.true_size/7);
+            ctx.rect(this.x+this.true_size/5.1,this.y,this.true_size/16,this.true_size);
+            ctx.rect(this.x+this.true_size/2.111,this.y,this.true_size/16,this.true_size);
+            ctx.rect(this.x+this.true_size/1.333,this.y,this.true_size/16,this.true_size);
+            ctx.closePath();
+            ctx.fill();
+    
+            ctx.fillStyle = 'Black';
+            ctx.beginPath();
+            ctx.rect(this.x+this.true_size/2.4,this.y+this.true_size/2.4,this.true_size/6,this.true_size/6);
+            ctx.closePath();
+            ctx.fill();
+        }
+
     }
 }
 
@@ -218,16 +272,18 @@ function update() {
     
     //draw_fog();
     player.draw();
-    
+    key.carry_check(player);
+    key.draw();
+
+    // later on, we should check to see object locations
+    // before drawing the walls. or visa versa.
     wall.draw();
     wall2.draw();
     wall3.draw();
 
-    key.carry_check(player);
-    key.draw();
-     // fog kind of works, but if the key is drawn before the fog, the key disappears.
 }
 
+// set up canvas and context
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -244,4 +300,5 @@ var wall3 = new Wall(64,64,143,343);
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+// update the screen
 update();

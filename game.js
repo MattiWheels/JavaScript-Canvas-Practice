@@ -41,8 +41,9 @@ class Player {
 class Key {
     held = false;
     true_size = 10;
-    constructor(size,x,y) {
-        this.size = size;
+    constructor(size1,size2,x,y) {
+        this.size1 = size1;
+        this.size2 = size2;
         this.x = x;
         this.y = y;
     }
@@ -51,7 +52,7 @@ class Key {
         // fill ring shape - the main part of the key
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
-        ctx.rect(this.x,this.y,this.size,this.size);
+        ctx.rect(this.x,this.y,this.size1,this.size2);
         ctx.closePath();
         ctx.fill();
 
@@ -59,7 +60,7 @@ class Key {
         ctx.globalCompositeOperation='destination-out';
         ctx.fillStyle = 'white';
         ctx.beginPath();
-        ctx.rect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5)
+        ctx.rect(this.x+this.size1/6,this.y+this.size2/6,this.size1/1.5,this.size2/1.5)
         ctx.closePath();
         ctx.fill();
 
@@ -67,29 +68,31 @@ class Key {
         ctx.globalCompositeOperation='source-over';
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
-        ctx.rect(this.x+this.size,this.y+this.size/2,this.size,this.size/8)
+        ctx.rect(this.x+this.size1,this.y+this.size2/2,this.size1,this.size2/8)
         ctx.closePath();
         ctx.fill();
 
         // fill key teeth
         ctx.beginPath();
-        ctx.rect(this.x+this.size*2,this.y+this.size/2,this.size/6,this.size/3);
-        ctx.rect(this.x+this.size*1.5,this.y+this.size/2,this.size/6,this.size/3);
+        ctx.rect(this.x+this.size1*2,this.y+this.size2/2,this.size1/6,this.size2/3);
+        ctx.rect(this.x+this.size1*1.5,this.y+this.size2/2,this.size1/6,this.size2/3);
         ctx.closePath();
         ctx.fill();
 
     }
     collide_check(player) {
-        let check = collision(player,key);
+        let check = collision(player,this);
         if(check == true) {
             this.held = true;
-            this.size = key.true_size/2;
+            this.size1 = key.true_size/2;
+            this.size2 = key.true_size/2;
             this.x = player.x+player.size/4;
             this.y = player.y+player.size/4;
         } else {
             this.held = false;
-            if(this.size != key.true_size) {
-                this.size = key.true_size;
+            if(this.size1 != key.true_size && this.size2 != key.true_size) {
+                this.size1 = key.true_size;
+                this.size2 = key.true_size;
             }
         }
     }
@@ -104,15 +107,16 @@ class Key {
 }
 
 class Wall {
-    constructor(size,x,y) {
-        this.size = size;
+    constructor(size1,size2,x,y) {
+        this.size1 = size1;
+        this.size2 = size2;
         this.x = x;
         this.y = y;
     }
     draw() {
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = 'navy';
         ctx.beginPath();
-        ctx.rect(this.x,this.y,this.size,this.size);
+        ctx.rect(this.x,this.y,this.size1,this.size2);
         ctx.closePath();
         ctx.fill();
         this.collide_check(player);
@@ -126,16 +130,16 @@ class Wall {
         }
     }
     collide_check(player) {
-        let check = collision(player,wall)
+        let check = collision(player,this)
         if (check) {
             if (arrow == 1) {
-                player.y = this.y + this.size;
+                player.y = this.y + this.size2;
             }
             else if (arrow == 3) {
                 player.y = this.y - player.size;
             }
             else if (arrow == 2) {
-                player.x = this.x + this.size;
+                player.x = this.x + this.size1;
             }
             else if (arrow == 4) {
                 player.x = this.x - player.size;
@@ -215,9 +219,9 @@ function boundary(obj) {
 }
 
 function collision(rect1, rect2) {
-    if (rect1.x < rect2.x + rect2.size &&
+    if (rect1.x < rect2.x + rect2.size1 &&
         rect1.x + rect1.size > rect2.x &&
-        rect1.y < rect2.y + rect2.size &&
+        rect1.y < rect2.y + rect2.size2 &&
         rect1.y + rect1.size > rect2.y) {
         return true;
     } else {
@@ -230,15 +234,23 @@ function update() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     boundary(player);
     wall.collide_check(player);
+    wall2.collide_check(player);
+    wall3.collide_check(player);
     
-    draw_fog();
+    //draw_fog();
     player.draw();
     
     // checks to see if key is within player vision (kind of) and if the player is touching the key
     wall.visible_check(player);
     key.visible_check(player);
     
-    key.collide_check(player,key);
+    wall.draw();
+    wall2.draw();
+    wall3.draw();
+    key.draw();
+
+
+    key.collide_check(player);
     
     
         
@@ -251,9 +263,11 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 
-var player = new Player(8,64,64,4,'red');
-var key = new Key(10, 88, 88);
-var wall = new Wall(32,100,100);
+var player = new Player(8,63,63,4,'red');
+var key = new Key(10, 10, 88, 88);
+var wall = new Wall(512,32,143,151);
+var wall2 = new Wall(32,128,143,183);
+var wall3 = new Wall(64,64,143,343);
 var arrow = 0
 
 document.addEventListener("keydown", keyDownHandler, false);

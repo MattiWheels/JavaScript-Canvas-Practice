@@ -9,6 +9,7 @@ canvas.height = window.innerHeight-200;
 var upPressed = downPressed = rightPressed = leftPressed = false;
 var player = new Player(8,63,63,4,'red');
 var key = new Key(10, 88, 88);
+var door = new Door(400,400);
 
 var wall = new Wall(512,32,143,151);
 var wall2 = new Wall(32,128,143,183);

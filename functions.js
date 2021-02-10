@@ -100,4 +100,6 @@ function update() {
     wall2.draw();
     wall3.draw();
 
+    door.draw();
+
 }

@@ -79,6 +79,7 @@ class Key {
     carry_check(player) {
         let check = collision(player,this);
         if(check == true) {
+            door.open = false;
             this.held = true;
             this.size = this.true_size/2;
             this.x = player.x+player.size/4;
@@ -88,6 +89,9 @@ class Key {
             if(this.size != key.true_size) {
                 this.size = key.true_size;
             }
+        }
+        if(this.held == false && collision(this, door) == true) {
+            door.open = true;
         }
     }
 }
@@ -281,6 +285,8 @@ function update() {
     wall2.draw();
     wall3.draw();
 
+    door.draw();
+
 }
 
 // set up canvas and context
@@ -292,6 +298,7 @@ canvas.height = window.innerHeight-200;
 var upPressed = downPressed = rightPressed = leftPressed = false;
 var player = new Player(8,63,63,4,'red');
 var key = new Key(10, 88, 88);
+var door = new Door(0,0)
 
 var wall = new Wall(512,32,143,151);
 var wall2 = new Wall(32,128,143,183);

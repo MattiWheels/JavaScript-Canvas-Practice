@@ -1,30 +1,40 @@
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    boundary(player);
+    ctx.globalCompositeOperation='destination-over';
 
-    wall.barrier(player);
-    wall2.barrier(player);
-    wall3.barrier(player);
-    
-    //draw_fog();
-    player.draw();
-    key.carry_check(player);
-    key.draw();
-
-    // later on, we should check to see object locations
-    // before drawing the walls. or visa versa.
     wall.draw();
     wall2.draw();
     wall3.draw();
 
-    door.draw();
+
+    ctx.fillStyle = tile;
+    ctx.beginPath();
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalCompositeOperation='destination-atop';
+    boundary(player);
+
+    player.draw();
+    wall.barrier(player);
+    wall2.barrier(player);
+    wall3.barrier(player);
+
+    //draw_fog();
+
+    key.carry_check(player);
+    key.draw();
+
+    //door.draw();
 
 }
 
 // set up canvas and context
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+var bg = document.getElementById('bg');
+const tile = ctx.createPattern(bg,'repeat');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 

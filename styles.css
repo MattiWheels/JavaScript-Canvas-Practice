@@ -4,7 +4,7 @@
 }
 
 body {
-    background-color: #000;
+    background-color: rgb(102, 102, 102);
 }
 
 h1 {
@@ -13,8 +13,4 @@ h1 {
 
 .information-area {
     color: aqua;
-}
-
-canvas {
-    background-image: url("img/bg.png");
 }

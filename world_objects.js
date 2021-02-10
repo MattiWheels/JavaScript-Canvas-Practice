@@ -79,6 +79,7 @@ class Key {
     carry_check(player) {
         let check = collision(player,this);
         if(check == true) {
+            door.open = false;
             this.held = true;
             this.size = this.true_size/2;
             this.x = player.x+player.size/4;
@@ -88,6 +89,9 @@ class Key {
             if(this.size != key.true_size) {
                 this.size = key.true_size;
             }
+        }
+        if(this.held == false && collision(this, door) == true) {
+            door.open = true;
         }
     }
 }
@@ -178,3 +182,6 @@ class Wall {
         }
     }
 }
+
+
+

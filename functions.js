@@ -79,27 +79,3 @@ function draw_fog() {
     ctx.closePath();
     ctx.fill();
 }
-
-function update() {
-    requestAnimationFrame(update);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    boundary(player);
-
-    wall.barrier(player);
-    wall2.barrier(player);
-    wall3.barrier(player);
-    
-    //draw_fog();
-    player.draw();
-    key.carry_check(player);
-    key.draw();
-
-    // later on, we should check to see object locations
-    // before drawing the walls. or visa versa.
-    wall.draw();
-    wall2.draw();
-    wall3.draw();
-
-    door.draw();
-
-}

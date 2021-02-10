@@ -15,8 +15,7 @@ class Player {
         ctx.fill();
     }
     vision() {
-        ctx.globalCompositeOperation='destination-out';
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = tile;
         ctx.beginPath();
         ctx.arc(this.x+5,this.y+5,55,0,2 * Math.PI);
         ctx.closePath();
@@ -54,15 +53,14 @@ class Key {
         ctx.fill();
 
         // erase to make key-hole
-        ctx.globalCompositeOperation='destination-out';
-        ctx.fillStyle = 'white';
+
+        ctx.fillStyle = tile;
         ctx.beginPath();
         ctx.rect(this.x+this.size/6,this.y+this.size/6,this.size/1.5,this.size/1.5);
         ctx.closePath();
         ctx.fill();
 
         // fill long key piece
-        ctx.globalCompositeOperation='source-over';
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
         ctx.rect(this.x+this.size,this.y+this.size/2,this.size,this.size/8);
@@ -259,33 +257,48 @@ function draw_fog() {
     ctx.rect(0,0,canvas.width,canvas.height);
     ctx.closePath();
     ctx.fill();
+    
 }
 
 function update() {
     requestAnimationFrame(update);
     ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    //ctx.globalCompositeOperation='destination-over';
+
+    wall.draw();
+    wall2.draw();
+    wall3.draw();
+
+
+    ctx.fillStyle = tile;
+    ctx.beginPath();
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.closePath();
+    ctx.fill();
+    //ctx.globalCompositeOperation='destination-atop';
     boundary(player);
 
+    player.draw();
     wall.barrier(player);
     wall2.barrier(player);
     wall3.barrier(player);
     
     //draw_fog();
-    player.draw();
+    
     key.carry_check(player);
     key.draw();
 
     // later on, we should check to see object locations
     // before drawing the walls. or visa versa.
-    wall.draw();
-    wall2.draw();
-    wall3.draw();
-
+    
 }
 
 // set up canvas and context
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+var bg = document.getElementById('bg');
+const tile = ctx.createPattern(bg,'repeat');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-200;
 

@@ -6,7 +6,8 @@ function update() {
     wall.draw();
     wall2.draw();
     wall3.draw();
-
+    
+    door.draw();
 
     ctx.fillStyle = tile;
     ctx.beginPath();
@@ -26,7 +27,6 @@ function update() {
     key.carry_check(player);
     key.draw();
 
-    //door.draw();
 
 }
 
